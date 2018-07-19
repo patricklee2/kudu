@@ -265,6 +265,27 @@ RUN curl -SL $DOTNET_SDK_DOWNLOAD_URL --output dotnet.tar.gz \
   && rm dotnet.tar.gz \
   && ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet
 
+# Install .NET Core 2.0.9 runtime
+ENV DOTNET_RUNTIME_VERSION 2.0.9
+ENV DOTNET_RUNTIME_DOWNLOAD_URL  https://dotnetcli.blob.core.windows.net/dotnet/Runtime/$DOTNET_RUNTIME_VERSION/dotnet-runtime-$DOTNET_RUNTIME_VERSION-linux-x64.tar.gz
+ENV DOTNET_RUNTIME_DOWNLOAD_SHA 2b49b24ef712fbfc056e0fda95ff18037b4ec938ca8bb41f4c336b6a50870e922f5093684ac92c4bb8e1155b03c36d132d7f90817793f31c9ade5267fff6629a
+
+RUN curl -SL $DOTNET_RUNTIME_DOWNLOAD_URL --output dotnet-runtime.tar.gz \
+  && echo "$DOTNET_RUNTIME_DOWNLOAD_SHA dotnet-runtime.tar.gz" | sha512sum -c - \
+  && mkdir -p /usr/share/dotnet \
+  && tar -zxf dotnet-runtime.tar.gz -C /usr/share/dotnet \
+  && rm dotnet-runtime.tar.gz
+
+# Install ASP.NET Core 2.0.9 runtime
+RUN wget -qO https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.asc.gpg \
+  && mv microsoft.asc.gpg /etc/apt/trusted.gpg.d/ \
+  && wget -q https://packages.microsoft.com/config/debian/8/prod.list \
+  && mv prod.list /etc/apt/sources.list.d/microsoft-prod.list \
+  && chown root:root /etc/apt/trusted.gpg.d/microsoft.asc.gpg \
+  && chown root:root /etc/apt/sources.list.d/microsoft-prod.list \
+  && apt-get update \
+  && apt-get install dotnet-hosting-2.0.9 
+
 # Moving the package cache to the container image will require user packages to be repopulated
 # for each new build done in a new container instance, but it's *much* faster than
 # using a location on the user's site volume and does not require them to use their storage, and
