@@ -265,6 +265,25 @@ RUN curl -SL $DOTNET_SDK_DOWNLOAD_URL --output dotnet.tar.gz \
   && rm dotnet.tar.gz \
   && ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet
 
+# Install .NET Core 2.0.9 runtime
+ENV DOTNET_RUNTIME_VERSION 2.0.9
+ENV DOTNET_RUNTIME_DOWNLOAD_URL  https://dotnetcli.blob.core.windows.net/dotnet/Runtime/$DOTNET_RUNTIME_VERSION/dotnet-runtime-$DOTNET_RUNTIME_VERSION-linux-x64.tar.gz
+ENV DOTNET_RUNTIME_DOWNLOAD_SHA 2b49b24ef712fbfc056e0fda95ff18037b4ec938ca8bb41f4c336b6a50870e922f5093684ac92c4bb8e1155b03c36d132d7f90817793f31c9ade5267fff6629a
+
+RUN curl -SL $DOTNET_RUNTIME_DOWNLOAD_URL --output dotnet-runtime.tar.gz \
+  && echo "$DOTNET_RUNTIME_DOWNLOAD_SHA dotnet-runtime.tar.gz" | sha512sum -c - \
+  && tar -zxf dotnet-runtime.tar.gz -C /usr/share/dotnet \
+  && rm dotnet-runtime.tar.gz
+
+ENV ASPNET_RUNTIME_DOWNLOAD_URL https://download.microsoft.com/download/3/a/3/3a3bda26-560d-4d8e-922e-6f6bc4553a84/aspnetcore-store-2.0.9-linux-x64.tar.gz 
+ENV ASPNET_RUNTIME_DOWNLOAD_SHA 7724637f1c37a0ab6b3535acdb38583e248fb06f59e25630f45107c6affd32b1397db2f6e3a91a7ab07a42c3d7e4ff45cd50bf9c406029ca50f07491007b64e2
+
+# Install ASP.NET Core 2.0.9 runtime
+RUN curl -SL $ASPNET_RUNTIME_DOWNLOAD_URL --output aspnet-runtime.tar.gz \
+  && echo "$ASPNET_RUNTIME_DOWNLOAD_SHA aspnet-runtime.tar.gz" | sha512sum -c - \
+  && tar -zxf aspnet-runtime.tar.gz -C /usr/share/dotnet \
+  && rm aspnet-runtime.tar.gz
+
 # Moving the package cache to the container image will require user packages to be repopulated
 # for each new build done in a new container instance, but it's *much* faster than
 # using a location on the user's site volume and does not require them to use their storage, and
