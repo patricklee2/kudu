@@ -474,7 +474,7 @@ RUN pip3 install virtualenv
 COPY kudu.conf /tmp
 COPY apache2.conf /tmp
 RUN npm install -g kudusync \
-  && wget -O /tmp/Kudu.zip https://wawsinfraprodbay063.blob.core.windows.net/kudu/Kudu.75.10710.3480.zip \
+  && wget -O /tmp/Kudu.zip https://patlekuduandy.blob.core.windows.net/patlekuduandy/Kudu-andy3.zip \
   && cp /tmp/kudu.conf /etc/apache2/sites-available/kudu.conf \
   && cp /tmp/apache2.conf /etc/apache2/apache2.conf  \
   && unzip -q -o /tmp/Kudu.zip \
