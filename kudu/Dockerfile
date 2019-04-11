@@ -456,8 +456,8 @@ ENV PYTHON_3_6_PATH /usr/local/python/3.6.6/bin
 # Install Kudu
 COPY kudu.conf /tmp
 COPY apache2.conf /tmp
+COPY kudu.zip /tmp/kudu.zip
 RUN npm install -g kudusync \
-  && wget -O /tmp/Kudu.zip https://wawsinfraprodbay063.blob.core.windows.net/kudu/Kudu.79.20129.3767.zip \
   && cp /tmp/kudu.conf /etc/apache2/sites-available/kudu.conf \
   && cp /tmp/apache2.conf /etc/apache2/apache2.conf  \
   && unzip -q -o /tmp/Kudu.zip \
